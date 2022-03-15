@@ -16,10 +16,6 @@
 
 package io.vertx.examples.spring.verticlefactory;
 
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
-import io.vertx.core.spi.VerticleFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -32,18 +28,8 @@ import org.springframework.context.annotation.Configuration;
 public class ExampleApplication {
 
   public static void main(String[] args) {
-    Vertx vertx = Vertx.vertx();
-
-    ApplicationContext context = new AnnotationConfigApplicationContext(ExampleApplication.class);
-
-    VerticleFactory verticleFactory = context.getBean(SpringVerticleFactory.class);
-
-    // The verticle factory is registered manually because it is created by the Spring container
-    vertx.registerVerticleFactory(verticleFactory);
-
-    // Scale the verticles on cores: create 4 instances during the deployment
-    DeploymentOptions options = new DeploymentOptions().setInstances(4);
-    vertx.deployVerticle(verticleFactory.prefix() + ":" + GreetingVerticle.class.getName(), options);
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ExampleApplication.class);
+    VertxAll vertxAll = context.getBean(VertxAll.class);
+    vertxAll.deployment();
   }
-
 }

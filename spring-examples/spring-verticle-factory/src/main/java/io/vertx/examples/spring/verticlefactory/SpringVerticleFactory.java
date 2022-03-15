@@ -60,7 +60,7 @@ public class SpringVerticleFactory implements VerticleFactory, ApplicationContex
   }
 
   @Override
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
+  public void setApplicationContext(ApplicationContext context) throws BeansException {
+    this.applicationContext = context;
   }
 }

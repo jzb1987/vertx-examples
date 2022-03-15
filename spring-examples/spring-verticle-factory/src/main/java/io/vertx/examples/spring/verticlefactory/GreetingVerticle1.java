@@ -32,9 +32,9 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 @Component
 // Prototype scope is needed as multiple instances of this verticle will be deployed
 @Scope(SCOPE_PROTOTYPE)
-@VertxInject(size = 4)
-public class GreetingVerticle extends AbstractVerticle {
-  private static final Logger LOG = LoggerFactory.getLogger(GreetingVerticle.class);
+@VertxInject(size = 2)
+public class GreetingVerticle1 extends AbstractVerticle {
+  private static final Logger LOG = LoggerFactory.getLogger(GreetingVerticle1.class);
 
   @Autowired
   Greeter greeter;
