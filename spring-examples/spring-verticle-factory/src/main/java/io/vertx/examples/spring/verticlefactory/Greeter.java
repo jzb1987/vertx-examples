@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  * @author Thomas Segismont
  */
 @Component
-public class Greeter {
+public class Greeter { //Vertx使用的依赖注入对象
 
   public String sayHello(String name) {
     return "Hello " + name;

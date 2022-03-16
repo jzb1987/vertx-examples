@@ -17,19 +17,25 @@
 package io.vertx.examples.spring.verticlefactory;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
 
 /**
  * @author Thomas Segismont
  */
-@Configuration
-@ComponentScan("io.vertx.examples.spring.verticlefactory")
 public class ExampleApplication {
 
   public static void main(String[] args) {
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ExampleApplication.class);
-    VertxAll vertxAll = context.getBean(VertxAll.class);
-    vertxAll.deployment();
+
+    //获取容器对象
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringVertxManager.class.getPackage().getName());
+
+    //部署所有加了注解"@SpringVertx"的Vertx到容器
+    new SpringVertxManager(context).deployment();
+
+    //打印容器里的Bean名称
+    Arrays.stream(context.getBeanDefinitionNames()).forEach(s -> {
+      System.out.println("Bean名称:" + s);
+    });
   }
 }

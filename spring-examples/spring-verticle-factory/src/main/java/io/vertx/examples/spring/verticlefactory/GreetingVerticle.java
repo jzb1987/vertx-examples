@@ -21,19 +21,13 @@ import io.vertx.core.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 /**
  * @author Thomas Segismont
  */
-@Component
-// Prototype scope is needed as multiple instances of this verticle will be deployed
-@Scope(SCOPE_PROTOTYPE)
-@VertxInject(size = 4)
+@SpringVertx(16)
 public class GreetingVerticle extends AbstractVerticle {
+
   private static final Logger LOG = LoggerFactory.getLogger(GreetingVerticle.class);
 
   @Autowired
@@ -50,7 +44,7 @@ public class GreetingVerticle extends AbstractVerticle {
         // It's fine to call the greeter from the event loop as it's not blocking
         request.response().end(greeter.sayHello(name));
       }
-    }).listen(8081, ar -> {
+    }).listen(8080, ar -> {
       if (ar.succeeded()) {
         LOG.info("GreetingVerticle started: @" + this.hashCode());
         startPromise.complete();

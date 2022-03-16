@@ -57,6 +57,7 @@ public class SpringVerticleFactory implements VerticleFactory, ApplicationContex
 
   @Override
   public void close() {
+    System.out.println("SpringVerticleFactory关闭了");
   }
 
   @Override
