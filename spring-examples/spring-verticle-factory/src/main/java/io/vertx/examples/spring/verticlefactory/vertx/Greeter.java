@@ -14,8 +14,10 @@
  * under the License.
  */
 
-package io.vertx.examples.spring.verticlefactory;
+package io.vertx.examples.spring.verticlefactory.vertx;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,6 +25,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Greeter { //Vertx使用的依赖注入对象
+
+  private final Logger logger = LoggerFactory.getLogger(Greeter.class);
+
+  public Greeter() {
+    logger.info(this + "创建了");
+  }
 
   public String sayHello(String name) {
     return "Hello " + name;

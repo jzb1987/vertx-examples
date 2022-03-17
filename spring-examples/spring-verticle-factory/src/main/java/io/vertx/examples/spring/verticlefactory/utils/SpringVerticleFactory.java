@@ -14,15 +14,15 @@
  * under the License.
  */
 
-package io.vertx.examples.spring.verticlefactory;
+package io.vertx.examples.spring.verticlefactory.utils;
 
 import io.vertx.core.Promise;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.spi.VerticleFactory;
-import org.springframework.beans.BeansException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Callable;
@@ -33,10 +33,16 @@ import java.util.concurrent.Callable;
  *
  * @author Thomas Segismont
  */
-@Component
-public class SpringVerticleFactory implements VerticleFactory, ApplicationContextAware {
+@Component("springVerticleFactory")
+public class SpringVerticleFactory implements VerticleFactory {
 
-  private ApplicationContext applicationContext;
+  private final Logger logger = LoggerFactory.getLogger(SpringVerticleFactory.class);
+  private final ApplicationContext applicationContext;
+
+  public SpringVerticleFactory(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
+    logger.info(this + "创建了");
+  }
 
   @Override
   public String prefix() {
@@ -46,6 +52,7 @@ public class SpringVerticleFactory implements VerticleFactory, ApplicationContex
 
   @Override
   public void init(Vertx vertx) {
+    logger.info("SpringVerticleFactory初始化了");
   }
 
   @Override
@@ -57,11 +64,7 @@ public class SpringVerticleFactory implements VerticleFactory, ApplicationContex
 
   @Override
   public void close() {
-    System.out.println("SpringVerticleFactory关闭了");
+    logger.info("SpringVerticleFactory关闭了");
   }
 
-  @Override
-  public void setApplicationContext(ApplicationContext context) throws BeansException {
-    this.applicationContext = context;
-  }
 }

@@ -16,6 +16,8 @@
 
 package io.vertx.examples.spring.verticlefactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Arrays;
@@ -25,17 +27,16 @@ import java.util.Arrays;
  */
 public class ExampleApplication {
 
+  private static final Logger logger = LoggerFactory.getLogger(ExampleApplication.class);
+
   public static void main(String[] args) {
 
     //获取容器对象
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringVertxManager.class.getPackage().getName());
-
-    //部署所有加了注解"@SpringVertx"的Vertx到容器
-    new SpringVertxManager(context).deployment();
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ExampleApplication.class.getPackage().getName());
 
     //打印容器里的Bean名称
     Arrays.stream(context.getBeanDefinitionNames()).forEach(s -> {
-      System.out.println("Bean名称:" + s);
+      logger.info("Bean名称:" + s);
     });
   }
 }

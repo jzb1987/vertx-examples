@@ -14,10 +14,11 @@
  * under the License.
  */
 
-package io.vertx.examples.spring.verticlefactory;
+package io.vertx.examples.spring.verticlefactory.vertx;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import io.vertx.examples.spring.verticlefactory.utils.SpringVerticle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author Thomas Segismont
  */
-@SpringVertx(16)
+@SpringVerticle(16)
 public class GreetingVerticle extends AbstractVerticle {
 
   private static final Logger LOG = LoggerFactory.getLogger(GreetingVerticle.class);
-
+  private final Logger logger = LoggerFactory.getLogger(GreetingVerticle.class);
   @Autowired
-  Greeter greeter;
+  private Greeter greeter;
+
+  public GreetingVerticle() {
+    logger.info(this + "创建了");
+  }
 
   @Override
   public void start(Promise<Void> startPromise) {
