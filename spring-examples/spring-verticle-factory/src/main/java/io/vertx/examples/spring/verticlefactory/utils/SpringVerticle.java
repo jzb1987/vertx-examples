@@ -29,11 +29,18 @@ public @interface SpringVerticle {
   long DEFAULT_MAX_WORKER_EXECUTE_TIME = 60000000000L;
 
   /**
+   * 是否自动部署，默认为true
+   *
+   * @return
+   */
+  boolean value() default true;
+
+  /**
    * Vertx部署实例化的个数，默认为1
    *
    * @return
    */
-  int value() default DeploymentOptions.DEFAULT_INSTANCES;
+  int instances() default DeploymentOptions.DEFAULT_INSTANCES;
 
   /**
    * 是否使用HA，默认为false

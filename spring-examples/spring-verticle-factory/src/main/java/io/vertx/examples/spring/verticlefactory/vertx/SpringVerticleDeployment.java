@@ -3,7 +3,7 @@ package io.vertx.examples.spring.verticlefactory.vertx;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import io.vertx.examples.spring.verticlefactory.utils.CommonOptions;
+import io.vertx.examples.spring.verticlefactory.utils.CommonOptionsForYml;
 import io.vertx.examples.spring.verticlefactory.utils.SpringVerticle;
 import io.vertx.examples.spring.verticlefactory.utils.SpringVerticleFactory;
 import org.reflections.Reflections;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-@DependsOn({"springVerticleFactory", "commonOptions"})
+@DependsOn({"springVerticleFactory", "commonOptionsForYml"})
 public class SpringVerticleDeployment {
 
-  private final Logger logger = LoggerFactory.getLogger(GreetingVerticle.class);
+  private final Logger logger = LoggerFactory.getLogger(SpringVerticleDeployment.class);
 
-  public SpringVerticleDeployment(SpringVerticleFactory verticleFactory, CommonOptions commonOptions) {
+  public SpringVerticleDeployment(SpringVerticleFactory verticleFactory, CommonOptionsForYml commonOptionsForYml) {
     Vertx vertx = Vertx.vertx();
 
     // The verticle factory is registered manually because it is created by the Spring container
@@ -32,23 +32,22 @@ public class SpringVerticleDeployment {
     //获取目标注解类
     Set<Class<?>> set = f.getTypesAnnotatedWith(SpringVerticle.class);
 
-    //先设置共同值选项
-    //部署Vertx
+    //创建部署Vertx共同值选项
     DeploymentOptions commonDeploymentOptions = new DeploymentOptions();
-    //设置YML配置的值
+    //共同值选项设置YML的值
     //实例个数
-    if (commonOptions.getInstances() > 0 && commonOptions.getInstances() != DeploymentOptions.DEFAULT_INSTANCES) {
-      commonDeploymentOptions.setInstances(commonOptions.getInstances());
+    if (commonOptionsForYml.getInstances() > 0 && commonOptionsForYml.getInstances() != DeploymentOptions.DEFAULT_INSTANCES) {
+      commonDeploymentOptions.setInstances(commonOptionsForYml.getInstances());
     }
     //工作Vertx
-    commonDeploymentOptions.setWorker(commonOptions.isWorker());
-    commonDeploymentOptions.setMaxWorkerExecuteTime(commonOptions.getMaxWorkerExecuteTime());
-    commonDeploymentOptions.setWorkerPoolSize(commonOptions.getWorkerPoolSize());
-    if (null != commonOptions.getWorkerPoolName() && !"".equals(commonOptions.getWorkerPoolName())) {
-      commonDeploymentOptions.setWorkerPoolName(commonOptions.getWorkerPoolName());
+    commonDeploymentOptions.setWorker(commonOptionsForYml.isWorker());
+    commonDeploymentOptions.setMaxWorkerExecuteTime(commonOptionsForYml.getMaxWorkerExecuteTime());
+    commonDeploymentOptions.setWorkerPoolSize(commonOptionsForYml.getWorkerPoolSize());
+    if (null != commonOptionsForYml.getWorkerPoolName() && !"".equals(commonOptionsForYml.getWorkerPoolName())) {
+      commonDeploymentOptions.setWorkerPoolName(commonOptionsForYml.getWorkerPoolName());
     }
     //HA设置
-    commonDeploymentOptions.setHa(commonOptions.isHa());
+    commonDeploymentOptions.setHa(commonOptionsForYml.isHa());
 
     logger.info("共同值 instances = " + commonDeploymentOptions.getInstances());
     logger.info("共同值 ha = " + commonDeploymentOptions.isHa());
@@ -62,11 +61,25 @@ public class SpringVerticleDeployment {
     }
     logger.info("共同值 workerPoolSize = " + commonDeploymentOptions.getWorkerPoolSize());
 
-    //部署所有加有"SpringVerticle"注解的Vertx
+    //部署所有加有"SpringVerticle"注解的Vertx，默认为自动部署
     for (Class<?> aClass : set) {
+      //获取注解类名
+      String name = aClass.getName();
+      logger.info("name = " + name);
+
       //取出注解的属性值
       SpringVerticle classAnnotation = aClass.getAnnotation(SpringVerticle.class);
-      int instances = classAnnotation.value();
+      boolean isAutoDeployment = classAnnotation.value();
+
+      if (!isAutoDeployment) {
+        //若不是则跳出循环，进行下一次循环
+        logger.info("{} 不进行自动部署", name);
+        continue;
+      } else {
+        logger.info("{} 自动部署", name);
+      }
+
+      int instances = classAnnotation.instances();
       logger.info("获取的注解值 instances = " + instances);
       boolean worker = classAnnotation.worker();
       logger.info("获取的注解值 worker = " + worker);
@@ -107,10 +120,6 @@ public class SpringVerticleDeployment {
         myDeploymentOptions.setHa(true);
       }
 
-      //获取注解类名
-      String name = aClass.getName();
-      logger.info("name = " + name);
-
       logger.info("最终部署 instances = " + myDeploymentOptions.getInstances());
       logger.info("最终部署 worker = " + myDeploymentOptions.isWorker());
       logger.info("最终部署 ha = " + myDeploymentOptions.isHa());
@@ -127,6 +136,6 @@ public class SpringVerticleDeployment {
         logger.info(ff.getLocalizedMessage());
       });
     }
-    logger.info(this + "创建了");
+    logger.info(this + "创建部署了");
   }
 }

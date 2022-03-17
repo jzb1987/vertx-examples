@@ -7,13 +7,13 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-@Component("commonOptions")
+@Component("commonOptionsForYml")
 @DependsOn("springVerticleFactory")
 @PropertySource(value = "classpath:commonOptions.yml", factory = YamlPropertySourceFactory.class)
 /**
  * Vertx部署的共同选项，若Vertx上有非默认值的注解，则以注解的为准
  */
-public class CommonOptions {
+public class CommonOptionsForYml {
 
   @Value("${verticle.deploymentCommonOptions.worker}")
   private boolean worker = DeploymentOptions.DEFAULT_WORKER;

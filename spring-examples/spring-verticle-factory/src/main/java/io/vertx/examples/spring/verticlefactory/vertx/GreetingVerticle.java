@@ -26,10 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author Thomas Segismont
  */
-@SpringVerticle(16)
+@SpringVerticle
 public class GreetingVerticle extends AbstractVerticle {
 
-  private static final Logger LOG = LoggerFactory.getLogger(GreetingVerticle.class);
   private final Logger logger = LoggerFactory.getLogger(GreetingVerticle.class);
   @Autowired
   private Greeter greeter;
@@ -42,7 +41,7 @@ public class GreetingVerticle extends AbstractVerticle {
   public void start(Promise<Void> startPromise) {
     vertx.createHttpServer().requestHandler(request -> {
       String name = request.getParam("name");
-      LOG.info(this.hashCode() + "Got request for name: " + name);
+      logger.info(this.hashCode() + "Got request for name: " + name);
       if (name == null) {
         request.response().setStatusCode(400).end("Missing name");
       } else {
@@ -51,7 +50,7 @@ public class GreetingVerticle extends AbstractVerticle {
       }
     }).listen(8080, ar -> {
       if (ar.succeeded()) {
-        LOG.info("GreetingVerticle started: @" + this.hashCode());
+        logger.info("GreetingVerticle started: @" + this.hashCode());
         startPromise.complete();
       } else {
         startPromise.fail(ar.cause());
