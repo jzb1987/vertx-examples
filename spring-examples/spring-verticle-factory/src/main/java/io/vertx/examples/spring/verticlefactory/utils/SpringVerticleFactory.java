@@ -47,7 +47,7 @@ public class SpringVerticleFactory implements VerticleFactory {
   @Override
   public String prefix() {
     // Just an arbitrary string which must uniquely identify the verticle factory
-    return "myapp";
+    return "myVertx";
   }
 
   @Override

@@ -3,9 +3,7 @@
 This project shows how you can build a Verticle factory based on the Spring container.
 
 Why not injecting a verticle instance and deploy it directly?
-Because Vert.x follows the Multi-Reactor pattern,
-so if you want to scale accross your server's CPU,
-you need to http://vertx.io/docs/vertx-core/java/#_specifying_number_of_verticle_instances[deploy multiple instances of your verticle].
+Because Vert.x follows the Multi-Reactor pattern, so if you want to scale accross your server's CPU, you need to http://vertx.io/docs/vertx-core/java/#_specifying_number_of_verticle_instances[deploy multiple instances of your verticle].
 
 Only then Vert.x will guarantee that the instances run on separate event loops.
 
@@ -18,11 +16,9 @@ As it is managed by the Spring container, it must be registered manually (usuall
 The `io.vertx.examples.spring.verticlefactory.SpringVerticleFactory` depends on a simple greeter component.
 It sets up an HttpServer and use the greeter to generate a hello message for the HTTP response.
 
-IMPORTANT: When you invoke Spring beans from standard verticles, remember that you must not call blocking code
-or you will block the event loop.
+IMPORTANT: When you invoke Spring beans from standard verticles, remember that you must not call blocking code or you will block the event loop.
 
 == Trying
-
 
 In a terminal, compile and run the example:
 

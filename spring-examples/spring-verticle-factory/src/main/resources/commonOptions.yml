@@ -1,0 +1,8 @@
+verticle:
+  deploymentCommonOptions:
+    instances: 1  #Vertx部署实例化的个数，默认为1
+    ha: false  #是否使用HA，默认为false
+    worker: false #是否让该Vertx成为工作Vertx，默认为false
+    workerPoolName: #工作Vertx默认名称，留空则系统默认分配
+    workerPoolSize: 20 #工作Vertx池的最大线程数量，默认为20
+    maxWorkerExecuteTime: 60000000000  #工作Vertx最大允许执行时间，默认为60000000000纳秒，也就是60秒
