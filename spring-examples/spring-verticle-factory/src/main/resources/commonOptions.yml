@@ -1,5 +1,6 @@
 verticle:
   deploymentCommonOptions:
+    clusteredVertx: true #是否分布式集群部署
     instances: 1  #Vertx部署实例化的个数，默认为1
     ha: false  #是否使用HA，默认为false
     worker: false #是否让该Vertx成为工作Vertx，默认为false

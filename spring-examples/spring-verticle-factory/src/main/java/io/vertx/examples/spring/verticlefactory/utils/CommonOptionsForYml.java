@@ -15,8 +15,15 @@ import org.springframework.stereotype.Component;
  */
 public class CommonOptionsForYml {
 
+  @Value("${verticle.deploymentCommonOptions.clusteredVertx}")
+  private boolean clusteredVertx = false;
+
   @Value("${verticle.deploymentCommonOptions.worker}")
   private boolean worker = DeploymentOptions.DEFAULT_WORKER;
+
+  public boolean isClusteredVertx() {
+    return clusteredVertx;
+  }
 
   @Value("${verticle.deploymentCommonOptions.workerPoolName}")
   private String workerPoolName = null;

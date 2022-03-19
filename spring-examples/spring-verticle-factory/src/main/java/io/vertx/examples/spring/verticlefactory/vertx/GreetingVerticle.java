@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author Thomas Segismont
  */
-@SpringVerticle
+@SpringVerticle(instances = 16)
 public class GreetingVerticle extends AbstractVerticle {
 
   private final Logger logger = LoggerFactory.getLogger(GreetingVerticle.class);

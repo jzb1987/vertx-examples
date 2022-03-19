@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Set;
 
 @Component
@@ -19,13 +20,18 @@ import java.util.Set;
 public class SpringVerticleDeployment {
 
   private final Logger logger = LoggerFactory.getLogger(SpringVerticleDeployment.class);
+  private final SpringVerticleFactory verticleFactory;
+  private final CommonOptionsForYml commonOptionsForYml;
 
   public SpringVerticleDeployment(SpringVerticleFactory verticleFactory, CommonOptionsForYml commonOptionsForYml) {
-    Vertx vertx = Vertx.vertx();
+    this.verticleFactory = verticleFactory;
+    this.commonOptionsForYml = commonOptionsForYml;
+    logger.info(this + "部署创建了");
+  }
 
-    // The verticle factory is registered manually because it is created by the Spring container
-    vertx.registerVerticleFactory(verticleFactory);
 
+  @PostConstruct//对象创建后，进行方法初始化的注解
+  private void deployment() {
     //需要扫描的包名
     Reflections f = new Reflections(this.getClass().getPackage().getName());
 
@@ -61,6 +67,29 @@ public class SpringVerticleDeployment {
     }
     logger.info("共同值 workerPoolSize = " + commonDeploymentOptions.getWorkerPoolSize());
 
+    //是否集群部署
+    if (commonOptionsForYml.isClusteredVertx()){
+      //分布式集群部署
+
+      Vertx.clusteredVertx(new VertxOptions(),ar->{
+        if (ar.succeeded()){
+          logger.info("分布式集群部署");
+          Vertx vertx = ar.result();
+          //部署所有加有"SpringVerticle"注解的Vertx，默认为自动部署
+          doDeployment(set, commonDeploymentOptions, vertx);
+        }else {
+          logger.info("分布式集群部署失败");
+        }
+      });
+    }else {
+      //单个应用部署
+      logger.info("单个应用部署");
+      Vertx vertx = Vertx.vertx();
+      doDeployment(set, commonDeploymentOptions, vertx);
+    }
+  }
+
+  private void doDeployment(Set<Class<?>> set, DeploymentOptions commonDeploymentOptions, Vertx vertx) {
     //部署所有加有"SpringVerticle"注解的Vertx，默认为自动部署
     for (Class<?> aClass : set) {
       //获取注解类名
@@ -127,6 +156,8 @@ public class SpringVerticleDeployment {
       logger.info("最终部署 workerPoolName = " + myDeploymentOptions.getWorkerPoolName());
       logger.info("最终部署 workerPoolSize = " + myDeploymentOptions.getWorkerPoolSize());
 
+      // The verticle factory is registered manually because it is created by the Spring container
+      vertx.registerVerticleFactory(verticleFactory);
       vertx.deployVerticle(verticleFactory.prefix() + ":" + name, myDeploymentOptions).onSuccess(ss -> {
         logger.info("部署成功");
         logger.info("name = " + name);
@@ -136,6 +167,6 @@ public class SpringVerticleDeployment {
         logger.info(ff.getLocalizedMessage());
       });
     }
-    logger.info(this + "创建部署了");
+    logger.info(this + "部署操作完成了");
   }
 }

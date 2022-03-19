@@ -38,5 +38,14 @@ public class ExampleApplication {
     Arrays.stream(context.getBeanDefinitionNames()).forEach(s -> {
       logger.info("Bean名称:" + s);
     });
+
+    logger.info("Bean总计:" + context.getBeanDefinitionCount());
+
+   /* String[] beanNamesForType = context.getBeanNamesForType(GreetingVerticle.class);
+    Arrays.stream(beanNamesForType).forEach(s->{
+      logger.info("GreetingVerticle.class Bean名称:" + s);
+    });*/
+
   }
+
 }

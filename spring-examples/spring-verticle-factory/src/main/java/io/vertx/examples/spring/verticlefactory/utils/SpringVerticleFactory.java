@@ -33,7 +33,7 @@ import java.util.concurrent.Callable;
  *
  * @author Thomas Segismont
  */
-@Component("springVerticleFactory")
+@Component("springVerticleFactory")//该类在所有Vertx之前进入容器
 public class SpringVerticleFactory implements VerticleFactory {
 
   private final Logger logger = LoggerFactory.getLogger(SpringVerticleFactory.class);
@@ -52,7 +52,7 @@ public class SpringVerticleFactory implements VerticleFactory {
 
   @Override
   public void init(Vertx vertx) {
-    logger.info("SpringVerticleFactory初始化了");
+    logger.info(this + "初始化了");
   }
 
   @Override
@@ -60,11 +60,12 @@ public class SpringVerticleFactory implements VerticleFactory {
     // Our convention in this example is to give the class name as verticle name
     String clazz = VerticleFactory.removePrefix(verticleName);
     promise.complete(() -> (Verticle) applicationContext.getBean(Class.forName(clazz)));
+    logger.info(this + "正在创建Vertx");
   }
 
   @Override
   public void close() {
-    logger.info("SpringVerticleFactory关闭了");
+    logger.info(this + "关闭了");
   }
 
 }
