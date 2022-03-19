@@ -75,6 +75,8 @@ public class SpringVerticleDeployment {
         if (ar.succeeded()){
           logger.info("分布式集群部署");
           Vertx vertx = ar.result();
+          // The verticle factory is registered manually because it is created by the Spring container
+          vertx.registerVerticleFactory(verticleFactory);
           //部署所有加有"SpringVerticle"注解的Vertx，默认为自动部署
           doDeployment(set, commonDeploymentOptions, vertx);
         }else {
@@ -85,6 +87,8 @@ public class SpringVerticleDeployment {
       //单个应用部署
       logger.info("单个应用部署");
       Vertx vertx = Vertx.vertx();
+      // The verticle factory is registered manually because it is created by the Spring container
+      vertx.registerVerticleFactory(verticleFactory);
       doDeployment(set, commonDeploymentOptions, vertx);
     }
   }
@@ -156,8 +160,6 @@ public class SpringVerticleDeployment {
       logger.info("最终部署 workerPoolName = " + myDeploymentOptions.getWorkerPoolName());
       logger.info("最终部署 workerPoolSize = " + myDeploymentOptions.getWorkerPoolSize());
 
-      // The verticle factory is registered manually because it is created by the Spring container
-      vertx.registerVerticleFactory(verticleFactory);
       vertx.deployVerticle(verticleFactory.prefix() + ":" + name, myDeploymentOptions).onSuccess(ss -> {
         logger.info("部署成功");
         logger.info("name = " + name);
